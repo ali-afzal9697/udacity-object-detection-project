@@ -14,8 +14,8 @@ RUN apt-get update && apt-get install -y \
     libgl1-mesa-dev \
     wget
 
-# Copy this version of the model garden into the image
-COPY models/research/object_detection /home/tensorflow/models/research/object_detection 
+# Clone the version of the model garden into the image
+RUN git clone https://github.com/tensorflow/models.git /home/tensorflow/models
 
 # Compile protobuf configs
 RUN (cd /home/tensorflow/models/research/ && protoc object_detection/protos/*.proto --python_out=.)
@@ -27,7 +27,7 @@ ENV PATH="/home/tensorflow/.local/bin:${PATH}"
 RUN python -m pip install -U pip
 RUN python -m pip install .
 
-ENV TF_CPP_MIN_LOG_LEVEL 3
+ENV TF_CPP_MIN_LOG_LEVEL=3
 
 # Install SageMaker training-toolkit
 RUN pip3 install sagemaker-training
